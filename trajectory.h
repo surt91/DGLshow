@@ -5,8 +5,10 @@
 #include "dgls.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 #include <QWidget>
+//#include <QtOpenGL/QGLWidget>
 #include <QTimer>
 #include <QPainter>
 #include <QRectF>
@@ -23,7 +25,7 @@ class Trajectory : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Trajectory(dglType type, QWidget *parent = 0);
+    explicit Trajectory(QWidget *parent = 0, dglType type = Lorenz);
     ~Trajectory();
     RungeKuttaSolver *rk4;
     static const int X = 800;
@@ -33,6 +35,7 @@ public:
 private:
     int t;
     int traceLength;
+    int traceLengthLimit;
     int N;
     QPointF **buffer;
     void update_trajectory_buffer();
@@ -45,6 +48,8 @@ signals:
 
 public slots:
      void timestep();
+     void setTraceLength(int);
+     void setDGL(QString);
 
 };
 

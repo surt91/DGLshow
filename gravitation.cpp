@@ -1,6 +1,6 @@
 #include <math.h>
 
-void gravitation(double *z, double t, int dim, double *m, double *out)
+void gravitation(double *z, double , int dim, double *m, double *out)
 {
     int num_particles = dim/4;
     double gamma = 1;

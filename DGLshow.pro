@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui #opengl
 #CONFIG += debug
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -19,10 +19,13 @@ SOURCES += main.cpp\
     lorenzattraktor.cpp \
     trajectory.cpp \
     gravitation.cpp \
-    double_pendulum.cpp
+    double_pendulum.cpp \
+    mainwindow.cpp
 
 HEADERS  += rungekuttasolver.h \
     trajectory.h \
-    dgls.h
+    dgls.h \
+    mainwindow.h
 
-FORMS    +=
+FORMS    += \
+    mainwindow.ui

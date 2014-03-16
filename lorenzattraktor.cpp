@@ -1,4 +1,4 @@
-void lorenz(double *r, double t, int dim, double *param, double *out)
+void lorenz(double *r, double , int , double *, double *out)
 {
     // Lorenz Modell
     double sigma, r_param, b;

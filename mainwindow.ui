@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>902</width>
+    <height>661</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <widget class="Trajectory" name="trajectory" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>800</width>
+        <height>600</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QComboBox" name="comboBox">
+        <item>
+         <property name="text">
+          <string>Lorenz</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Body3</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Body4</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>random Body 10</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>double Pendulum</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="verticalSlider">
+        <property name="maximum">
+         <number>300</number>
+        </property>
+        <property name="value">
+         <number>5</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::TicksBelow</enum>
+        </property>
+        <property name="tickInterval">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>902</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Trajectory</class>
+   <extends>QWidget</extends>
+   <header>trajectory.h</header>
+   <container>1</container>
+   <slots>
+    <slot>setTraceLength(int)</slot>
+    <slot>setDGL(QString)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>verticalSlider</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>trajectory</receiver>
+   <slot>setTraceLength(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>827</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>329</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>trajectory</receiver>
+   <slot>setDGL(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>853</x>
+     <y>42</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>329</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
