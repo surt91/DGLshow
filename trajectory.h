@@ -26,7 +26,7 @@ public:
 
 private:
     int t;
-    static const int traceLength = 1000;
+    int traceLength;
     int N;
     qreal **buffer;
 

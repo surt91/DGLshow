@@ -6,14 +6,17 @@ Trajectory::Trajectory(QWidget *parent) :
     t = 0;
     resize(X, Y);
 
+    traceLength = 10000;
+
 //    N = 1;
 //    double z0[] = {1,1,20};
-//    rk4 = new RungeKuttaSolver(z0, 0.005, rk_lorenz_func, N*3);
+//    rk4 = new RungeKuttaSolver(z0, N*3, 0.005, rk_lorenz_func, NULL, 0);
 
     N=3;
     double z0[] = { 0,0,  0,-1,  0,2,
                    -0.5,-0.2,  1.3,0.3, -1,0.2};
-    rk4 = new RungeKuttaSolver(z0, 0.00005, gravitation, N*4);
+    double m[] = {1, 2, 3};
+    rk4 = new RungeKuttaSolver(z0, N*4, 0.00005, gravitation, m, N);
 
     buffer = new qreal*[2*N];
     for(int i=0;i<2*N;i++)
@@ -27,15 +30,16 @@ Trajectory::Trajectory(QWidget *parent) :
 Trajectory::~Trajectory()
 {
     delete rk4;
+    for(int i=0;i<2*N;i++)
+        delete[] buffer[i];
+    delete[] buffer;
 }
 
 void Trajectory::paintEvent(QPaintEvent *)
 {
-//    printf("paint\n");
-
     QColor col[] = {QColor("red"), QColor("blue"), QColor("green"),
-                      QColor("darkRed"), QColor("darkCyan"), QColor("darkMagenta"),
-                      QColor("darkGreen"), QColor("yellow")};
+                    QColor("darkRed"), QColor("darkCyan"), QColor("darkMagenta"),
+                    QColor("darkGreen"), QColor("yellow")};
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
@@ -61,12 +65,26 @@ void Trajectory::paintEvent(QPaintEvent *)
         // Spur
         buffer[2*i][t%traceLength] = x - X * floor(x/X);
         buffer[2*i+1][t%traceLength] = y - Y * floor(y/Y);
+
+        qreal x_point = buffer[2*i][t%traceLength];
+        qreal y_point = buffer[2*i+1][t%traceLength];
+
         QPainterPath path;
-        path.moveTo(buffer[2*i][t%traceLength], buffer[2*i+1][t%traceLength]);
+        path.moveTo(x_point, y_point);
         for(int j=traceLength; j>0; j--)
             if((t+j)%traceLength < t)
-                path.lineTo(buffer[2*i][(t+j)%traceLength] - X * floor(buffer[2*i][(t+j)%traceLength]/X),
-                        buffer[2*i+1][(t+j)%traceLength] - Y * floor(buffer[2*i+1][(t+j)%traceLength]/Y));
+            {
+                qreal x_point_tmp = buffer[2*i][(t+j)%traceLength] - X * floor(buffer[2*i][(t+j)%traceLength]/X);
+                qreal y_point_tmp = buffer[2*i+1][(t+j)%traceLength] - Y * floor(buffer[2*i+1][(t+j)%traceLength]/Y);
+
+                if(abs(x_point - x_point_tmp) > X/2 || abs(y_point - y_point_tmp) > Y/2)
+                    path.moveTo(x_point_tmp, y_point_tmp);
+                else
+                    path.lineTo(x_point_tmp, y_point_tmp);
+
+                x_point = x_point_tmp;
+                y_point = y_point_tmp;
+            }
 
         painter.setPen(QPen(col[i], 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
         painter.drawPath(path);

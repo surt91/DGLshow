@@ -1,7 +1,5 @@
 #include <QApplication>
 
-//#include "lorenzattraktor.h"
-//#include "gravitation.h"
 #include "trajectory.h"
 
 int main(int argc, char *argv[])
@@ -11,6 +9,4 @@ int main(int argc, char *argv[])
     pic.show();
 
     return a.exec();
-
-//    run_grav();
 }

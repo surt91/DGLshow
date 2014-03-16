@@ -5,12 +5,14 @@
 #-------------------------------------------------
 
 QT       += core gui
-CONFIG += debug
+#CONFIG += debug
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = DGLshow
 TEMPLATE = app
 
+QMAKE_CXXFLAGS_RELEASE += -O3 -march=native -flto
+QMAKE_LFLAGS_RELEASE += -O3 -march=native -flto
 
 SOURCES += main.cpp\
     rungekuttasolver.cpp \
