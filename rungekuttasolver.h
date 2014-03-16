@@ -8,7 +8,7 @@ class RungeKuttaSolver
     public:
         RungeKuttaSolver(double *z0, int dim, double tau, void (*dgl)(double*, double, int, double*, double*), double *param, int num_param);
         ~RungeKuttaSolver();
-        void step(int N);    // calculates a step and returns the new state
+        void step(double T);    // calculates a step and returns the new state
         double *z;      // current state
 
     private:

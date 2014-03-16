@@ -48,10 +48,11 @@ Trajectory::Trajectory(dglType type, QWidget *parent) :
         }
     }
 
-    buffer = new qreal*[2*N];
-    for(int i=0;i<2*N;i++)
-        buffer[i] = new qreal[traceLength];
+    buffer = new QPointF*[N];
+    for(int i=0;i<N;i++)
+        buffer[i] = new QPointF[traceLength];
 
+    update();
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timestep()));
     timer->start(16);
@@ -60,7 +61,7 @@ Trajectory::Trajectory(dglType type, QWidget *parent) :
 Trajectory::~Trajectory()
 {
     delete rk4;
-    for(int i=0;i<2*N;i++)
+    for(int i=0;i<N;i++)
         delete[] buffer[i];
     delete[] buffer;
 }
@@ -72,58 +73,71 @@ void Trajectory::paintEvent(QPaintEvent *)
                     QColor("darkGreen"), QColor("yellow")};
 
     QPainter painter(this);
+    qreal dx = X/scale, dy = Y/scale;
+
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setRenderHint(QPainter::HighQualityAntialiasing, true);
 
-    painter.eraseRect(0, 0, X, Y);
+    painter.scale(scale, scale);
 
-    qreal w = 1*scale; qreal h = 1*scale;
+    painter.eraseRect(0, 0, dx, dy);
+
+    qreal w = 1; qreal h = 1;
 
     for(int i=0;i<N;i++)
     {
-        qreal x = rk4->z[i*2];
-        qreal y = rk4->z[i*2+1];
-
-        x = x*scale+X/2;
-        y = y*scale+Y/8;
-
-        qreal periodic_center_x = x-w/2 - X * floor((x-w/2)/X);
-        qreal periodic_center_y = y-h/2 - Y * floor((y-h/2)/Y);
-        QRectF rect(periodic_center_x, periodic_center_y, w, h);
-        painter.fillRect(rect, col[i]);;
-
-        // Spur
-        buffer[2*i][t%traceLength] = x - X * floor(x/X);
-        buffer[2*i+1][t%traceLength] = y - Y * floor(y/Y);
-
-        qreal x_point = buffer[2*i][t%traceLength];
-        qreal y_point = buffer[2*i+1][t%traceLength];
+        QPointF r = buffer[i][t%traceLength];
+        QSize size(w, h);
+        QPointF center = make_periodic_and_translate(r - QPointF(w, h)/2);
+        QRectF rect(center, size);
+        painter.fillRect(rect, col[i]);
 
         QPainterPath path;
-        path.moveTo(x_point, y_point);
-        for(int j=traceLength; j>0; j--)
+        path.moveTo(make_periodic_and_translate(buffer[i][(t+1)%traceLength]));
+        for(int j=1; j<traceLength; j++)
             if((t+j)%traceLength < t)
             {
-                qreal x_point_tmp = buffer[2*i][(t+j)%traceLength] - X * floor(buffer[2*i][(t+j)%traceLength]/X);
-                qreal y_point_tmp = buffer[2*i+1][(t+j)%traceLength] - Y * floor(buffer[2*i+1][(t+j)%traceLength]/Y);
+                QPointF prev = make_periodic_and_translate(buffer[i][(t+j)%traceLength]);
+                QPointF now = make_periodic_and_translate(buffer[i][(t+j+1)%traceLength]);
 
-                if(abs(x_point - x_point_tmp) > X/2 || abs(y_point - y_point_tmp) > Y/2)
-                    path.moveTo(x_point_tmp, y_point_tmp);
+                if(abs(prev.x() - now.x()) > dx/2 || abs(prev.y() - now.y()) > dy/2)
+                    path.moveTo(now);
                 else
-                    path.lineTo(x_point_tmp, y_point_tmp);
-
-                x_point = x_point_tmp;
-                y_point = y_point_tmp;
+                    path.lineTo(now);
             }
 
-        painter.setPen(QPen(col[i], 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+        painter.setPen(QPen(col[i], 0.1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+        painter.setBrush(QBrush(Qt::NoBrush));
         painter.drawPath(path);
+    }
+}
+
+QPointF Trajectory::make_periodic_and_translate(QPointF r)
+{
+    qreal dx = X/scale;
+    qreal dy = Y/scale;
+
+    qreal x = r.x() + dx/2;
+    x = x - dx * floor(x/dx);
+    qreal y = r.y() + dy/2;
+    y = y - dy * floor(y/dy);
+
+    return QPointF(x, y);
+}
+
+void Trajectory::update_trajectory_buffer()
+{
+    for(int i=0;i<N;i++)
+    {
+        buffer[i][t%traceLength].setX(rk4->z[i*2]);
+        buffer[i][t%traceLength].setY(rk4->z[i*2+1]);
     }
 }
 
 void Trajectory::timestep()
 {
     t++;
-    rk4->step(16);
+    rk4->step(1.0/60.0);
+    update_trajectory_buffer();
     update();
 }

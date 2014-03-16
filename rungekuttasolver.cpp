@@ -29,11 +29,13 @@ RungeKuttaSolver::~RungeKuttaSolver()
     delete[] ztmp;
     delete[] z;
     delete[] p;
+    delete[] z1;
+    delete[] z2;
 }
 
-void RungeKuttaSolver::step(int N)
+void RungeKuttaSolver::step(double T)
 {
-    for(int j=0; j<N; j++)
+    for(double j=0; j<T; j+=tau)
     {
         int i;
         dgl(z, t, dim, p, Hs[0]);

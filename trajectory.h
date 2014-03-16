@@ -10,9 +10,12 @@
 #include <QTimer>
 #include <QPainter>
 #include <QRectF>
+#include <QSize>
+#include <QPointF>
 #include <QColor>
 #include <QPainterPath>
 #include <QPen>
+#include <QBrush>
 
 enum dglType {Lorenz, Body3, Body4, DoublePendulum};
 
@@ -31,8 +34,9 @@ private:
     int t;
     int traceLength;
     int N;
-    qreal **buffer;
-
+    QPointF **buffer;
+    void update_trajectory_buffer();
+    QPointF make_periodic_and_translate(QPointF);
 
 protected:
      void paintEvent(QPaintEvent *);
