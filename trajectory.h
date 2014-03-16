@@ -2,8 +2,9 @@
 #define TRAJECTORY_H
 
 #include "rungekuttasolver.h"
-#include "lorenzattraktor.h"
-#include "gravitation.h"
+#include "dgls.h"
+
+#include <math.h>
 
 #include <QWidget>
 #include <QTimer>
@@ -19,7 +20,7 @@ class Trajectory : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Trajectory(QWidget *parent = 0, dglType type);
+    explicit Trajectory(dglType type, QWidget *parent = 0);
     ~Trajectory();
     RungeKuttaSolver *rk4;
     static const int X = 800;

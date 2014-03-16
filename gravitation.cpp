@@ -1,4 +1,4 @@
-#include "gravitation.h"
+#include <math.h>
 
 void gravitation(double *z, double t, int dim, double *m, double *out)
 {

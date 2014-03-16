@@ -1,6 +1,4 @@
-#include "lorenzattraktor.h"
-
-void rk_lorenz_func(double *r, double t, int dim, double *param, double *out)
+void lorenz(double *r, double t, int dim, double *param, double *out)
 {
     // Lorenz Modell
     double sigma, r_param, b;

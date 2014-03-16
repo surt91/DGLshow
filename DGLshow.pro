@@ -18,11 +18,11 @@ SOURCES += main.cpp\
     rungekuttasolver.cpp \
     lorenzattraktor.cpp \
     trajectory.cpp \
-    gravitation.cpp
+    gravitation.cpp \
+    double_pendulum.cpp
 
 HEADERS  += rungekuttasolver.h \
-    lorenzattraktor.h \
     trajectory.h \
-    gravitation.h
+    dgls.h
 
 FORMS    +=

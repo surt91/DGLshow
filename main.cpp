@@ -5,7 +5,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Trajectory pic;
+    Trajectory pic(Lorenz);
     pic.show();
 
     return a.exec();
