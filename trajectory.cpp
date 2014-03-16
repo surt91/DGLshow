@@ -1,22 +1,44 @@
 #include "trajectory.h"
 
-Trajectory::Trajectory(QWidget *parent) :
+Trajectory::Trajectory(QWidget *parent, dglType, type) :
     QWidget(parent)
 {
     t = 0;
     resize(X, Y);
 
-    traceLength = 10000;
-
-//    N = 1;
-//    double z0[] = {1,1,20};
-//    rk4 = new RungeKuttaSolver(z0, N*3, 0.005, rk_lorenz_func, NULL, 0);
-
-    N=3;
-    double z0[] = { 0,0,  0,-1,  0,2,
-                   -0.5,-0.2,  1.3,0.3, -1,0.2};
-    double m[] = {1, 2, 3};
-    rk4 = new RungeKuttaSolver(z0, N*4, 0.00005, gravitation, m, N);
+    switch(type)
+    {
+        case Lorenz:
+            N = 1;
+            traceLength = 1000;
+            double z0[] = {1,1,20};
+            rk4 = new RungeKuttaSolver(z0, N*3, 0.005, rk_lorenz_func, NULL, 0);
+            break;
+        case Body3:
+            N=3;
+            traceLength = 10000;
+            double z0[] = { 0,0,  0,-1,  0,2,
+                           -0.5,-0.2,  1.3,0.3, -1,0.2};
+            double m[] = {1, 2, 3};
+            rk4 = new RungeKuttaSolver(z0, N*4, 0.00005, gravitation, m, N);
+            break;
+        case Body4:
+            N=4;
+            traceLength = 10000;
+            double z0[] = { 0,0,  0,-1,  0,2, 3,7,
+                           -0.5,-0.2,  1.3,0.3, -1,0.2, 0.4,-0.8};
+            double m[] = {1, 2, 3, 1};
+            rk4 = new RungeKuttaSolver(z0, N*4, 0.00005, gravitation, m, N);
+            break;
+        case DoublePendulum:
+            N = 2;
+            traceLength = 1000;
+            double z0[] = { 0,0,  1,-6, // r
+                           -1,0,  0,0}; // v
+            double m[] = {1, 1};
+            rk4 = new RungeKuttaSolver(z0, N*4, 0.005, double_pendulum, m, N);
+            break;
+    }
 
     buffer = new qreal*[2*N];
     for(int i=0;i<2*N;i++)

@@ -13,11 +13,13 @@
 #include <QPainterPath>
 #include <QPen>
 
+enum dglType {Lorenz, Body3, Body4, DoublePendulum};
+
 class Trajectory : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Trajectory(QWidget *parent = 0);
+    explicit Trajectory(QWidget *parent = 0, dglType type);
     ~Trajectory();
     RungeKuttaSolver *rk4;
     static const int X = 800;
