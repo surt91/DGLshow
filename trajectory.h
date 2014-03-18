@@ -28,12 +28,14 @@ public:
     explicit Trajectory(QWidget *parent = 0, dglType type = Lorenz);
     ~Trajectory();
     RungeKuttaSolver *rk4;
-    static const int X = 800;
-    static const int Y = 600;
+    static const int X = 1280;
+    static const int Y = 1024;
     static const double scale = 10;
+    QSize minimumSizeHint();
 
 private:
     int t;
+    double timeConstant;
     int traceLength;
     int traceLengthLimit;
     int N;
@@ -48,7 +50,8 @@ signals:
 
 public slots:
      void timestep();
-     void setTraceLength(int);
+     void setTraceLength(int=10);
+     void setTimeConstant(int=1);
      void setDGL(QString);
 
 };

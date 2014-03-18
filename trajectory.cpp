@@ -8,6 +8,7 @@ Trajectory::Trajectory(QWidget *parent, dglType type) :
     t = 0;
     resize(X, Y);
 
+    timeConstant = 1;
     traceLength = 300*60;
     traceLengthLimit = 10*60;
 
@@ -26,6 +27,7 @@ Trajectory::Trajectory(QWidget *parent, dglType type) :
         case DoublePendulum:
             str = new QString("double Pendulum");
             break;
+        // TODO: Planetensystem
         default:
             str = new QString("Lorenz");
     }
@@ -44,9 +46,19 @@ Trajectory::~Trajectory()
     delete[] buffer;
 }
 
+QSize Trajectory::minimumSizeHint()
+{
+    return(QSize(X, Y));
+}
+
 void Trajectory::setTraceLength(int T)
 {
     traceLengthLimit = T*60;
+}
+
+void Trajectory::setTimeConstant(int T)
+{
+    timeConstant = T/10.0;
 }
 
 #define RAND(max) (double) rand()/RAND_MAX * 2*max - max;
@@ -84,6 +96,27 @@ void Trajectory::setDGL(QString str)
         double z0[] = { 0,0,  0,-1,  0,2, 3,7,
                        -0.5,-0.2,  1.3,0.3, -1,0.2, 0.1,-0.8};
         double m[] = {1, 2, 1.5, 1};
+        rk4 = new RungeKuttaSolver(z0, N*4, 0.00005, gravitation, m, N);
+    }
+    else if(str == QString("Planets"))
+    {
+        N=7;
+        double z0[] = {0,0, 10,0,  0,6,  -15,0, 30,0, -35,35, 31,-0.3,
+                       0,0, 0,15,  20,0, 0,-14, 0,10,  -4,-4, -0.5,13};
+        double m[] = {3000, 1, 0.5, 1, 10, 0.7, 0.8};
+
+        // mache Gesamtimpuls = 0
+        double p_x=0, p_y=0;
+        for(int i=1;i<N;i++)
+        {
+            p_x += z0[2*i+N*2] * m[i];
+            p_y += z0[2*i+1+N*2] * m[i];
+        }
+        printf("%f, %f\n", z0[N/2],z0[N/2+1]);
+        z0[N*2] = - p_x/m[0];
+        z0[N*2+1] = - p_y/m[0];
+        printf("%f, %f\n", z0[N/2],z0[N/2+1]);
+
         rk4 = new RungeKuttaSolver(z0, N*4, 0.00005, gravitation, m, N);
     }
     else if(str == QString("random Body 10"))
@@ -198,7 +231,7 @@ void Trajectory::update_trajectory_buffer()
 void Trajectory::timestep()
 {
     t++;
-    rk4->steps(1.0/60.0);
+    rk4->steps(1.0/60.0*timeConstant);
     update_trajectory_buffer();
     update();
 }
