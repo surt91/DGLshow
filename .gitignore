@@ -1,0 +1,9 @@
+DGLshow
+
+moc_*
+ui_*
+
+*.o
+Makefile
+*.pro.user
+
