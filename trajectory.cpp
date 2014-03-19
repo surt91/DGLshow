@@ -121,10 +121,8 @@ void Trajectory::setDGL(QString str)
             p_x += z0[2*i+N*2] * m[i];
             p_y += z0[2*i+1+N*2] * m[i];
         }
-        printf("%f, %f\n", z0[N/2],z0[N/2+1]);
         z0[N*2] = - p_x/m[0];
         z0[N*2+1] = - p_y/m[0];
-        printf("%f, %f\n", z0[N/2],z0[N/2+1]);
 
         rk4 = new RungeKuttaSolver(z0, N*4, 0.00005, gravitation, m, N);
     }
@@ -194,6 +192,7 @@ void Trajectory::paintEvent(QPaintEvent *)
         QPointF second = make_periodic_and_translate(buffer[1][t%traceLength]);
         QRectF rect(origin - QPointF(w, h)/2, QSize(w, h)/2);
 
+        painter.setPen(QPen(QColor("Black"), 0.1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
         painter.setBrush(QBrush(QColor("Black")));
         painter.drawPie(rect, 0, 16*360);
         painter.setBrush(QBrush(Qt::NoBrush));
