@@ -6,3 +6,10 @@ included.
 
 To edit the initial values (like mass, position, velocity, ...) the 
 source has to be edited -- currently.
+
+To compile Qt4 or Qt5 is needed.
+Linux is tested, other OS are not.
+Compile with:
+qmake; make
+
+Have fun watching the colorful pixels ;)
