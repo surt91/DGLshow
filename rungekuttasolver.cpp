@@ -88,9 +88,9 @@ double RungeKuttaSolver::get_new_tau()
     tmp1 = 0; tmp2 = 0;
     for(i=0;i<dim;i++)
     {
-        //Norm^2 von z2-z1
+        //Norm^2 of z2-z1
         tmp1 += (z2[i]-z1[i])*(z2[i]-z1[i]);
-        //Norm^2 von (z1+z2)/2
+        //Norm^2 of (z1+z2)/2
         tmp2 += (z1[i]+z2[i])*(z1[i]+z2[i])/4;
     }
     r = sqrt(tmp1)/sqrt(tmp2);

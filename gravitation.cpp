@@ -9,7 +9,7 @@ void gravitation(double *z, double , int dim, double *m, double *out)
     for(int i=0; i<dim/2; i++)
         out[i] = z[i+dim/2];
 
-    // Kräfte
+    // delta v = a = F/m
     for(int i=0; i<num_particles; i++)
     {
         double dv_x = 0;
@@ -19,7 +19,7 @@ void gravitation(double *z, double , int dim, double *m, double *out)
             {
                 double x = z[2*i] - z[2*j];
                 double y = z[2*i + 1] - z[2*j + 1];
-                double tmp = sqrt(x*x + y*y) * (x*x + y*y); // Abstand ^ 3
+                double tmp = sqrt(x*x + y*y) * (x*x + y*y); // distance ^ 3
                 dv_x += m[j]/tmp*x;
                 dv_y += m[j]/tmp*y;
             }

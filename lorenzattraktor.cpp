@@ -1,6 +1,6 @@
 void lorenz(double *r, double , int , double *, double *out)
 {
-    // Lorenz Modell
+    // Lorenz model
     double sigma, r_param, b;
     double x, y, z;
     sigma   = 10;

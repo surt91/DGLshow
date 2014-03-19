@@ -1,5 +1,4 @@
 #include "trajectory.h"
-#include <math.h>
 
 Trajectory::Trajectory(QWidget *parent, dglType type) :
     QWidget(parent)
@@ -34,7 +33,6 @@ Trajectory::Trajectory(QWidget *parent, dglType type) :
         case DoublePendulum:
             str = QString("double Pendulum");
             break;
-        // TODO: Planetensystem
         default:
             str = QString("Lorenz");
     }
@@ -63,6 +61,9 @@ void Trajectory::setTraceLength(int T)
     traceLengthLimit = T*60;
 }
 
+// sets the speed of the animation
+// big timeConstant: more simulated time between frames >> fast forward
+// small timeConstant: less simulated time between frames >> slowmotion
 void Trajectory::setTimeConstant(int T)
 {
     timeConstant = T/10.0;
@@ -116,7 +117,7 @@ void Trajectory::setDGL(QString str)
                        0,0, 0,15,  20,0, 0,-14, 0,10,  -4,-4, -0.5,13};
         double m[] = {3000, 1, 0.5, 1, 10, 0.7, 0.8};
 
-        // mache Gesamtimpuls = 0
+        // change the momentum of the "sun", so that the total momentum is zero
         double p_x=0, p_y=0;
         for(int i=1;i<N;i++)
         {
@@ -146,7 +147,6 @@ void Trajectory::setDGL(QString str)
             z0[2*i+2*N] = RAND(v_max);
             z0[2*i+1+2*N] = RAND(v_max);
             m[i] = (double) rand()/RAND_MAX * 2;
-//            printf("%f\n", z0[2*i]);
         }
         rk4 = new RungeKuttaSolver(z0, N*4, 0.000005, gravitation, m, N);
     }
@@ -154,8 +154,8 @@ void Trajectory::setDGL(QString str)
     {
         type = DoublePendulum;
         N = 2;
-        double z0[] = { M_PI/4*3,     M_PI, // r
-                        0,     0};   // Winkelgeschwindigkeit
+        double z0[] = { M_PI/4*3,     M_PI, // angle
+                        0,     0};          // angular velocity
         pendulumL[0] = 10; pendulumL[1] = 8;
         double mAndL[] = {1, pendulumL[0], 0.5, pendulumL[1]};
         rk4 = new RungeKuttaSolver(z0, N*2, 0.000005, double_pendulum, mAndL, N*2);
@@ -170,6 +170,7 @@ void Trajectory::setDGL(QString str)
     update();
 }
 
+// paints the trajectory and positions
 void Trajectory::paintEvent(QPaintEvent *)
 {
     int numCol = 9;
@@ -234,6 +235,7 @@ void Trajectory::paintEvent(QPaintEvent *)
     }
 }
 
+// transformation to periodic boundary conditions, also translates the origin to the center of the widget
 QPointF Trajectory::make_periodic_and_translate(QPointF r)
 {
     qreal dx = X/scale;
@@ -247,6 +249,7 @@ QPointF Trajectory::make_periodic_and_translate(QPointF r)
     return QPointF(x, y);
 }
 
+// adds new entrys to the buffer, to draw the trajectories
 void Trajectory::update_trajectory_buffer()
 {
     if(type == DoublePendulum)
@@ -271,6 +274,7 @@ void Trajectory::update_trajectory_buffer()
     }
 }
 
+// calculates a time step, saves the result and updates the picture
 void Trajectory::timestep()
 {
     t++;

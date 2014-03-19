@@ -15,19 +15,17 @@ void double_pendulum(double *z, double , int , double *m, double *out)
     double dotTheta1 = z[2];
     double dotTheta2 = z[3];
 
-    // Differentialgleichung:
+    // source of ode
     // http://de.wikipedia.org/wiki/Doppelpendel
-    // reduziert auf 1. Ordnung
+    // reduce to ode of order 1
     double dTheta1 = dotTheta1;
     double dTheta2 = dotTheta2;
 
-
-    // Trigonometrische Funktionen cachen
+    // cache often needed trigonometric functions
     double C = cos(theta1-theta2);
     double S = sin(theta1-theta2);
 
-
-    // DGL
+    // ode
     double dDotTheta1 = (m2*C*(l1*S*(dotTheta1*dotTheta1) - g*sin(theta2)) + m2*l2*S*(dotTheta2*dotTheta2) + M*g*sin(theta1)) / (m2*l1*(C*C) - M*l1);
     double dDotTheta2 = (m2*l2*C*S*(dotTheta2*dotTheta2)  + M*l1*S*(dotTheta1*dotTheta1) + M*g*C*sin(theta1) - M*g*sin(theta2)) / (M*l2 - m2*l2*(C*C));
 
