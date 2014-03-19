@@ -73,15 +73,12 @@ void Trajectory::setTimeConstant(int T)
 
 void Trajectory::setDGL(QString str)
 {
-    try
+    if(t>0)
     {
         delete rk4;
         for(int i=0;i<N;i++)
             delete[] buffer[i];
         delete[] buffer;
-    }
-    catch (int e)
-    {
     }
 
     if(str == QString("Lorenz"))
