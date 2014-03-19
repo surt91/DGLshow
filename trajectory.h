@@ -19,7 +19,7 @@
 #include <QPen>
 #include <QBrush>
 
-enum dglType {Lorenz, Body3, Body4, DoublePendulum};
+enum dglType {Lorenz, Body3, Body4, Random10, Planets, DoublePendulum};
 
 class Trajectory : public QWidget
 {
@@ -32,6 +32,7 @@ public:
     static const int Y = 1024;
     static const double scale = 10;
     QSize minimumSizeHint();
+    dglType type;
 
 private:
     int t;
@@ -42,6 +43,7 @@ private:
     QPointF **buffer;
     void update_trajectory_buffer();
     QPointF make_periodic_and_translate(QPointF);
+    double pendulumL[2];
 
 protected:
      void paintEvent(QPaintEvent *);

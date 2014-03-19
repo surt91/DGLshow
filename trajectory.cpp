@@ -1,4 +1,5 @@
 #include "trajectory.h"
+#include <math.h>
 
 Trajectory::Trajectory(QWidget *parent, dglType type) :
     QWidget(parent)
@@ -12,26 +13,32 @@ Trajectory::Trajectory(QWidget *parent, dglType type) :
     traceLength = 300*60;
     traceLengthLimit = 10*60;
 
-    QString *str;
+    QString str;
     switch(type)
     {
         case Lorenz:
-            str = new QString("Lorenz");
+            str = QString("Lorenz");
             break;
         case Body3:
-            str = new QString("Body3");
+            str = QString("Body3");
             break;
         case Body4:
-            str = new QString("Body4");
+            str = QString("Body4");
+            break;
+        case Random10:
+            str = QString("random Body 10");
+            break;
+        case Planets:
+            str = QString("Planets");
             break;
         case DoublePendulum:
-            str = new QString("double Pendulum");
+            str = QString("double Pendulum");
             break;
         // TODO: Planetensystem
         default:
-            str = new QString("Lorenz");
+            str = QString("Lorenz");
     }
-    setDGL(*str);
+    setDGL(str);
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timestep()));
@@ -78,12 +85,14 @@ void Trajectory::setDGL(QString str)
 
     if(str == QString("Lorenz"))
     {
+        type = Lorenz;
         N = 1;
         double z0[] = {1,1,20};
         rk4 = new RungeKuttaSolver(z0, N*3, 0.005, lorenz, NULL, 0);
     }
     else if(str == QString("Body3"))
     {
+        type = Body3;
         N=3;
         double z0[] = { 0,0,  0,-1,  0,2,
                        -0.5,-0.2,  1.3,0.3, -1,0.2};
@@ -92,6 +101,7 @@ void Trajectory::setDGL(QString str)
     }
     else if(str == QString("Body4"))
     {
+        type = Body4;
         N=4;
         double z0[] = { 0,0,  0,-1,  0,2, 3,7,
                        -0.5,-0.2,  1.3,0.3, -1,0.2, 0.1,-0.8};
@@ -100,6 +110,7 @@ void Trajectory::setDGL(QString str)
     }
     else if(str == QString("Planets"))
     {
+        type = Planets;
         N=7;
         double z0[] = {0,0, 10,0,  0,6,  -15,0, 30,0, -35,35, 31,-0.3,
                        0,0, 0,15,  20,0, 0,-14, 0,10,  -4,-4, -0.5,13};
@@ -121,6 +132,7 @@ void Trajectory::setDGL(QString str)
     }
     else if(str == QString("random Body 10"))
     {
+        type = Random10;
         N = 10;
         double z0[N*4];
         double m[N];
@@ -140,11 +152,13 @@ void Trajectory::setDGL(QString str)
     }
     else if(str == QString("double Pendulum"))
     {
+        type = DoublePendulum;
         N = 2;
-        double z0[] = { 0,0,  1,-6, // r
-                       -1,0,  0,0}; // v
-        double m[] = {1, 1};
-        rk4 = new RungeKuttaSolver(z0, N*4, 0.005, double_pendulum, m, N);
+        double z0[] = { M_PI/4*3,     M_PI, // r
+                        0,     0};   // Winkelgeschwindigkeit
+        pendulumL[0] = 10; pendulumL[1] = 8;
+        double mAndL[] = {1, pendulumL[0], 0.5, pendulumL[1]};
+        rk4 = new RungeKuttaSolver(z0, N*2, 0.000005, double_pendulum, mAndL, N*2);
     }
 
     buffer = new QPointF*[N];
@@ -175,6 +189,21 @@ void Trajectory::paintEvent(QPaintEvent *)
 
     qreal w = 1; qreal h = 1;
 
+    if(type == DoublePendulum)
+    {
+        QPointF origin = make_periodic_and_translate(QPointF(0,0));
+        QPointF first = make_periodic_and_translate(buffer[0][t%traceLength]);
+        QPointF second = make_periodic_and_translate(buffer[1][t%traceLength]);
+        QRectF rect(origin - QPointF(w, h)/2, QSize(w, h)/2);
+
+        painter.setBrush(QBrush(QColor("Black")));
+        painter.drawPie(rect, 0, 16*360);
+        painter.setBrush(QBrush(Qt::NoBrush));
+
+        painter.drawLine(origin, first);
+        painter.drawLine(first, second);
+    }
+
     for(int i=0;i<N;i++)
     {
         QPointF r = buffer[i][t%traceLength];
@@ -201,7 +230,6 @@ void Trajectory::paintEvent(QPaintEvent *)
             }
 
         painter.setPen(QPen(col[i%numCol], 0.1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
-        painter.setBrush(QBrush(Qt::NoBrush));
         painter.drawPath(path);
     }
 }
@@ -221,6 +249,21 @@ QPointF Trajectory::make_periodic_and_translate(QPointF r)
 
 void Trajectory::update_trajectory_buffer()
 {
+    if(type == DoublePendulum)
+    {
+        double x = pendulumL[0] * sin(rk4->z[0]);
+        double y = pendulumL[0] * cos(rk4->z[0]);
+        buffer[0][t%traceLength].setX(x);
+        buffer[0][t%traceLength].setY(y);
+        buffer[1][t%traceLength].setX(pendulumL[1] * sin(rk4->z[1])+x);
+        buffer[1][t%traceLength].setY(pendulumL[1] * cos(rk4->z[1])+y);
+    }
+    else if(type == Lorenz)
+    {
+        buffer[0][t%traceLength].setX(rk4->z[0]);
+        buffer[0][t%traceLength].setY(rk4->z[2]);
+    }
+    else
     for(int i=0;i<N;i++)
     {
         buffer[i][t%traceLength].setX(rk4->z[i*2]);
