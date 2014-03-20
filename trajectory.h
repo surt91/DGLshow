@@ -7,17 +7,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <QWidget>
-//#include <QtOpenGL/QGLWidget>
-#include <QTimer>
-#include <QPainter>
-#include <QRectF>
-#include <QSize>
 #include <QPointF>
-#include <QColor>
-#include <QPainterPath>
-#include <QPen>
-#include <QBrush>
+#include <QString>
 
 enum dglType {Lorenz, Body3, Body4, Random10, Planets, DoublePendulum};
 
@@ -39,6 +30,11 @@ protected:
     QPointF **buffer;
     void update_trajectory_buffer();
 
+    void timestep();
+    void setTraceLength(int=10);
+    void setTimeConstant(int=1);
+    void setDGL(QString);
+
 private:
     double pendulumL[2];
 
@@ -48,15 +44,6 @@ private:
     void setThreeBody();
     void setFourBody();
     void setTenBody();
-
-signals:
-
-public slots:
-     void timestep();
-     void setTraceLength(int=10);
-     void setTimeConstant(int=1);
-     void setDGL(QString);
-
 };
 
 #endif // TRAJECTORY_H

@@ -2,9 +2,19 @@
 #define TRAJECTORYWIDGET_H
 
 #include <QWidget>
+#include <QtOpenGL/QGLWidget>
+#include <QTimer>
+#include <QPainter>
+#include <QRectF>
+#include <QSize>
+#include <QColor>
+#include <QPainterPath>
+#include <QPen>
+#include <QBrush>
+
 #include <trajectory.h>
 
-class TrajectoryWidget : public QWidget, Trajectory
+class TrajectoryWidget : public QGLWidget, Trajectory
 {
     Q_OBJECT
 public:
@@ -19,6 +29,7 @@ protected:
 
 private:
     QPointF make_periodic_and_translate(QPointF);
+    double strokeWidth;
 
 signals:
 

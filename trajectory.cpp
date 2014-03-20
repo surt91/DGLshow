@@ -6,7 +6,7 @@ Trajectory::Trajectory()
     timeConstant = 1;
     traceLength = 300*60;
     traceLengthLimit = 10*60;
-    setDGL("Lorenz");
+    setDGL(QString("Lorenz"));
 }
 
 Trajectory::~Trajectory()

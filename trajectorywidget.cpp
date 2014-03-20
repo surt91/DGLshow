@@ -1,9 +1,12 @@
 #include "trajectorywidget.h"
 
 TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
-    QWidget(parent), Trajectory()
-{t = 0;
+    QGLWidget(parent), Trajectory()
+{
+    t = 0;
+    strokeWidth = 0.15;
     resize(X, Y);
+    this->setFormat(QGLFormat(QGL::SampleBuffers));
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timestep()));
@@ -26,6 +29,10 @@ void TrajectoryWidget::paintEvent(QPaintEvent *)
     QPainter painter(this);
     qreal dx = X/scale, dy = Y/scale;
 
+
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_LINE_SMOOTH);
+
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setRenderHint(QPainter::HighQualityAntialiasing, true);
 
@@ -42,7 +49,7 @@ void TrajectoryWidget::paintEvent(QPaintEvent *)
         QPointF second = make_periodic_and_translate(buffer[1][t%traceLength]);
         QRectF rect(origin - QPointF(w, h)/2, QSize(w, h)/2);
 
-        painter.setPen(QPen(QColor("Black"), 0.1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+        painter.setPen(QPen(QColor("Black"), strokeWidth, Qt::SolidLine));
         painter.setBrush(QBrush(QColor("Black")));
         painter.drawPie(rect, 0, 16*360);
         painter.setBrush(QBrush(Qt::NoBrush));
@@ -61,6 +68,7 @@ void TrajectoryWidget::paintEvent(QPaintEvent *)
 
         QPainterPath path;
         bool first = true;
+
         for(int j=1; j<traceLength; j++)
             if((t+j)%traceLength < t && traceLength - j < traceLengthLimit)
             {
@@ -76,7 +84,7 @@ void TrajectoryWidget::paintEvent(QPaintEvent *)
                     path.lineTo(now);
             }
 
-        painter.setPen(QPen(col[i%numCol], 0.1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+        painter.setPen(QPen(col[i%numCol], strokeWidth, Qt::SolidLine));
         painter.drawPath(path);
     }
 }
