@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>963</width>
-    <height>661</height>
+    <width>1442</width>
+    <height>1063</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <widget class="Trajectory" name="trajectory" native="true">
+     <widget class="TrajectoryWidget" name="trajectory" native="true">
       <property name="minimumSize">
        <size>
         <width>1280</width>
@@ -128,7 +128,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>963</width>
+     <width>1442</width>
      <height>21</height>
     </rect>
    </property>
@@ -136,9 +136,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Trajectory</class>
+   <class>TrajectoryWidget</class>
    <extends>QWidget</extends>
-   <header>trajectory.h</header>
+   <header>trajectorywidget.h</header>
    <container>1</container>
    <slots>
     <slot>setTraceLength(int)</slot>

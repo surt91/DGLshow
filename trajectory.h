@@ -21,20 +21,16 @@
 
 enum dglType {Lorenz, Body3, Body4, Random10, Planets, DoublePendulum};
 
-class Trajectory : public QWidget
+class Trajectory
 {
-    Q_OBJECT
 public:
-    explicit Trajectory(QWidget *parent = 0, dglType type = Lorenz);
+    explicit Trajectory();
     ~Trajectory();
     RungeKuttaSolver *rk4;
-    static const int X = 1280;
-    static const int Y = 1024;
-    static const double scale = 10;
-    QSize minimumSizeHint();
     dglType type;
+    void benchmark();
 
-private:
+protected:
     int t;
     double timeConstant;
     int traceLength;
@@ -42,11 +38,16 @@ private:
     int N;
     QPointF **buffer;
     void update_trajectory_buffer();
-    QPointF make_periodic_and_translate(QPointF);
+
+private:
     double pendulumL[2];
 
-protected:
-     void paintEvent(QPaintEvent *);
+    void setLorenz();
+    void setPlanets();
+    void setDoublePendulum();
+    void setThreeBody();
+    void setFourBody();
+    void setTenBody();
 
 signals:
 

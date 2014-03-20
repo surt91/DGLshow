@@ -20,12 +20,14 @@ SOURCES += main.cpp\
     trajectory.cpp \
     gravitation.cpp \
     double_pendulum.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    trajectorywidget.cpp
 
 HEADERS  += rungekuttasolver.h \
     trajectory.h \
     dgls.h \
-    mainwindow.h
+    mainwindow.h \
+    trajectorywidget.h
 
 FORMS    += \
     mainwindow.ui
