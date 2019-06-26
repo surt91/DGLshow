@@ -18,5 +18,5 @@ source has to be edited -- currently.
 Dependencies are Qt4 or Qt5. The program can be build with:
 
 ```
-qmake; make
+cd src; qmake; make
 ```
