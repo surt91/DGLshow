@@ -2,7 +2,6 @@
 #define TRAJECTORYWIDGET_H
 
 #include <QWidget>
-#include <QtOpenGL/QGLWidget>
 #include <QTimer>
 #include <QPainter>
 #include <QRectF>
@@ -14,7 +13,7 @@
 
 #include <trajectory.h>
 
-class TrajectoryWidget : public QGLWidget, Trajectory
+class TrajectoryWidget : public QWidget, Trajectory
 {
     Q_OBJECT
 public:

@@ -1,19 +1,18 @@
 #include "trajectorywidget.h"
 
 TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
-    QGLWidget(parent), Trajectory()
+    QWidget(parent), Trajectory()
 {
     t = 0;
     strokeWidth = 0.15;
     resize(X, Y);
-    this->setFormat(QGLFormat(QGL::SampleBuffers));
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timestep()));
     timer->start(16);
 }
 
-QSize TrajectoryWidget::minimumSizeHint()
+QSize TrajectoryWidget::minimumSizeHint() const
 {
     return(QSize(X, Y));
 }
@@ -28,10 +27,6 @@ void TrajectoryWidget::paintEvent(QPaintEvent *)
 
     QPainter painter(this);
     qreal dx = X/scale, dy = Y/scale;
-
-
-    glEnable(GL_MULTISAMPLE);
-    glEnable(GL_LINE_SMOOTH);
 
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setRenderHint(QPainter::HighQualityAntialiasing, true);
