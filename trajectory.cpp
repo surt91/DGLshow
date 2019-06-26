@@ -120,12 +120,12 @@ void Trajectory::setFourBody()
     rk4 = new RungeKuttaSolver(z0, N*4, 0.00005, gravitation, m, N);
 }
 
-#define RAND(max) (double) rand()/RAND_MAX * 2*max - max;
+#define RAND(max) (double) rand()/RAND_MAX * 2*(max) - (max)
 void Trajectory::setTenBody()
 {
     srand(time(NULL));
     type = Random10;
-    N = 10;
+    constexpr int N = 10;
     double z0[N*4];
     double m[N];
 

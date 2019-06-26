@@ -21,8 +21,8 @@ public:
     explicit TrajectoryWidget(QWidget *parent = 0);
     static const int X = 1280;
     static const int Y = 1024;
-    static const double scale = 10;
-    QSize minimumSizeHint();
+    static const constexpr double scale = 10;
+    virtual QSize minimumSizeHint() const;
 
 protected:
     void paintEvent(QPaintEvent *);
