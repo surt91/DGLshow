@@ -1,0 +1,13 @@
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.vscode
+**/Dockerfile*
+**/docker-compose.yml
+**/target
+README.md
+
+*.o
+moc_*
+lorenz.png
